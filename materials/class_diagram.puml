@@ -37,8 +37,14 @@ package "Components" {
   }
 
   class ExtractText {
+    -extractedText: string
+    -isExtracting: boolean
+    -error: string | null
     -handleExtract()
     -handleDownload()
+    -extractTextFromPDF()
+    -extractTextWithOCR()
+    -downloadText()
     +render()
   }
 
@@ -75,6 +81,8 @@ package "External Libraries" {
   class "pdf.js" {
     +getDocument()
     +PDFDocumentProxy
+    +PDFPageProxy
+    +getTextContent()
   }
 
   class "react-sortablejs" {
@@ -84,6 +92,7 @@ package "External Libraries" {
   class "tesseract.js" {
     +createWorker()
     +recognize()
+    +terminate()
   }
 }
 
