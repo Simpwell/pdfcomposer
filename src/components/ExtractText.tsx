@@ -5,7 +5,7 @@ import { getDocument } from '../lib/pdfjs'
 import { createWorker } from 'tesseract.js'
 
 export function ExtractText() {
-  const { files, handleFileUpload, removeFile, clearFiles } = usePDFUpload()
+  const { files, handleFileUpload, clearFiles } = usePDFUpload()
   const [extractedText, setExtractedText] = useState<string>('')
   const [isExtracting, setIsExtracting] = useState(false)
   const [isOCRMode, setIsOCRMode] = useState(false)
@@ -14,7 +14,8 @@ export function ExtractText() {
     if (!files[0]) return
     setIsExtracting(true)
     try {
-      const pdfDoc = await getDocument(files[0]).promise
+      const fileArrayBuffer = await files[0].arrayBuffer()
+      const pdfDoc = await getDocument(fileArrayBuffer).promise
       const numPages = pdfDoc.numPages
       let fullText = ''
 
@@ -82,7 +83,7 @@ export function ExtractText() {
     <div className="space-y-4">
       <PDFDropZone
         message="PDFファイルをドロップ、またはクリックしてファイルを選択"
-        onFileUpload={handleFileUpload}
+        onFileSelect={handleFileUpload}
       />
       {files.length > 0 && (
         <div className="space-y-4">
