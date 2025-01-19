@@ -1,79 +1,68 @@
-import React, { useEffect, useRef } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import { useEffect, useRef } from 'react'
+import { PDFDocumentProxy } from 'pdfjs-dist'
+import { pdfjsLib } from '../lib/pdfjs'
 
 interface PDFPagePreviewProps {
-  pageNumber: number;
-  pdfDocument: pdfjsLib.PDFDocumentProxy;
+  pdfDocument: PDFDocumentProxy
+  pageNumber: number
+  width?: number
+  height?: number
 }
 
-export const PDFPagePreview: React.FC<PDFPagePreviewProps> = ({
-  pageNumber,
+export function PDFPagePreview({
   pdfDocument,
-}) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const renderTaskRef = useRef<pdfjsLib.RenderTask | null>(null);
-  const pageRef = useRef<pdfjsLib.PDFPageProxy | null>(null);
+  pageNumber,
+  width = 150,
+  height = 200,
+}: PDFPagePreviewProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const renderTaskRef = useRef<any>(null)
 
   useEffect(() => {
     const renderPage = async () => {
-      if (!canvasRef.current) return;
+      if (!canvasRef.current) return
 
       try {
-        // Cancel any ongoing render task
+        const page = await pdfDocument.getPage(pageNumber)
+        const viewport = page.getViewport({ scale: 0.3 })
+        const canvas = canvasRef.current
+        const context = canvas.getContext('2d')
+
+        if (!context) return
+
+        canvas.width = width
+        canvas.height = height
+
+        // 前回のレンダリングタスクをキャンセル
         if (renderTaskRef.current) {
-          await renderTaskRef.current.cancel();
-          renderTaskRef.current = null;
+          renderTaskRef.current.cancel()
         }
 
-        // Clean up previous page
-        if (pageRef.current) {
-          await pageRef.current.cleanup();
-          pageRef.current = null;
-        }
-
-        // Get new page
-        pageRef.current = await pdfDocument.getPage(pageNumber);
-        const viewport = pageRef.current.getViewport({ scale: 0.3 });
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d', { alpha: false });
-
-        if (!context) return;
-
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        context.fillStyle = 'white';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-
-        const renderContext = {
+        renderTaskRef.current = page.render({
           canvasContext: context,
-          viewport: viewport,
-          enableWebGL: false,
-          renderInteractiveForms: false,
-        };
+          viewport,
+        })
 
-        renderTaskRef.current = pageRef.current.render(renderContext);
-        await renderTaskRef.current.promise;
+        await renderTaskRef.current.promise
       } catch (error) {
-        console.error('Error rendering PDF page:', error);
+        console.error('Error rendering PDF page:', error)
       }
-    };
+    }
 
-    renderPage();
+    renderPage()
 
     return () => {
-      const cleanup = async () => {
-        if (renderTaskRef.current) {
-          await renderTaskRef.current.cancel();
-          renderTaskRef.current = null;
-        }
-        if (pageRef.current) {
-          await pageRef.current.cleanup();
-          pageRef.current = null;
-        }
-      };
-      cleanup();
-    };
-  }, [pageNumber, pdfDocument]);
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel()
+      }
+    }
+  }, [pdfDocument, pageNumber, width, height])
 
-  return <canvas ref={canvasRef} className="w-full h-full" />;
-}; 
+  return (
+    <canvas
+      ref={canvasRef}
+      className="border border-gray-200 rounded-lg shadow-sm"
+      style={{ width, height }}
+    />
+  )
+} 
