@@ -1,4 +1,3 @@
-import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { PDFPagePreview } from './PDFPagePreview';
 import type { PDFDocumentProxy } from 'pdfjs-dist';

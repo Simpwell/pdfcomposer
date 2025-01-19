@@ -1,6 +1,6 @@
 import React from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import { Check, Trash2, Plus, FilePlus } from 'lucide-react';
+import { Check, Trash2, FilePlus } from 'lucide-react';
 import { PDFPagePreview } from './PDFPagePreview';
 
 interface SelectablePagePreviewProps {
