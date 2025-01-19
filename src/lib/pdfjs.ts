@@ -8,4 +8,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 // 必要な型と関数をエクスポート
 export type { PDFDocumentProxy } from 'pdfjs-dist'
-export const { getDocument } = pdfjsLib 
+export const { getDocument } = pdfjsLib
+
+export { pdfjsLib } 
