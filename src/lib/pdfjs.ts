@@ -6,4 +6,5 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString()
 
-export { pdfjsLib } 
+// PDFドキュメントの読み込みに必要な関数のみをエクスポート
+export const { getDocument } = pdfjsLib 
