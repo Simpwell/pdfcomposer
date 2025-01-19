@@ -1,0 +1,103 @@
+@startuml
+
+' Components
+class App {
+  +render(): JSX.Element
+}
+
+class PDFDropZone {
+  +onDrop: (event: DragEvent) => void
+  +onDragOver: (event: DragEvent) => void
+  +onFileSelect: (files: FileList) => void
+  +icon?: ReactNode
+  +message?: string
+  +isAddMore?: boolean
+  +render(): JSX.Element
+}
+
+class PDFPagePreview {
+  +pageNumber: number
+  +pdfDocument: PDFDocumentProxy
+  +render(): JSX.Element
+}
+
+class PDFPageThumbnail {
+  +pageNumber: number
+  +pdfDocument: PDFDocumentProxy
+  +render(): JSX.Element
+}
+
+class PDFThumbnail {
+  +file: File
+  +onRemove: () => void
+  +render(): JSX.Element
+}
+
+' Features
+class MergePDF {
+  -handleMerge(): void
+  +render(): JSX.Element
+}
+
+class ReorderPages {
+  -handleReorder(): void
+  +render(): JSX.Element
+}
+
+class DeletePages {
+  -handleDelete(): void
+  +render(): JSX.Element
+}
+
+class ExtractPages {
+  -handleExtract(): void
+  +render(): JSX.Element
+}
+
+class SplitPDF {
+  -handleSplit(): void
+  +render(): JSX.Element
+}
+
+' Hooks
+class usePDFUpload {
+  -files: File[]
+  -error: string | null
+  -pdfDocument: PDFDocumentProxy | null
+  +handleFileUpload(files: FileList): void
+  +handleDrop(event: DragEvent): void
+  +handleDragOver(event: DragEvent): void
+  +removeFile(index: number): void
+  +clearFiles(): void
+}
+
+' Relationships
+App --> MergePDF
+App --> ReorderPages
+App --> DeletePages
+App --> ExtractPages
+App --> SplitPDF
+
+MergePDF --> PDFDropZone
+MergePDF --> PDFThumbnail
+MergePDF ..> usePDFUpload
+
+ReorderPages --> PDFDropZone
+ReorderPages --> PDFPageThumbnail
+ReorderPages ..> usePDFUpload
+
+DeletePages --> PDFDropZone
+DeletePages --> PDFPageThumbnail
+DeletePages ..> usePDFUpload
+
+ExtractPages --> PDFDropZone
+ExtractPages --> PDFPageThumbnail
+ExtractPages ..> usePDFUpload
+
+SplitPDF --> PDFDropZone
+SplitPDF --> PDFPagePreview
+SplitPDF ..> usePDFUpload
+
+PDFPageThumbnail --> PDFPagePreview
+
+@enduml 

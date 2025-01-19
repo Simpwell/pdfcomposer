@@ -1,0 +1,35 @@
+@startuml
+
+actor User
+participant "PDFDropZone" as Drop
+participant "Feature Component" as Feature
+participant "usePDFUpload" as Hook
+participant "PDF Library" as Lib
+
+' File Upload Flow
+User -> Drop: ドラッグ&ドロップ / ファイル選択
+activate Drop
+Drop -> Hook: handleFileUpload()
+activate Hook
+Hook -> Hook: ファイル検証
+Hook -> Lib: PDFドキュメント読み込み
+activate Lib
+Lib --> Hook: PDFドキュメント
+deactivate Lib
+Hook --> Drop: 完了
+deactivate Hook
+Drop --> User: プレビュー表示
+deactivate Drop
+
+' PDF Operation Flow
+User -> Feature: 操作実行
+activate Feature
+Feature -> Lib: PDFドキュメント操作
+activate Lib
+Lib --> Feature: 新しいPDFドキュメント
+deactivate Lib
+Feature -> Feature: Blobに変換
+Feature -> User: ダウンロード開始
+deactivate Feature
+
+@enduml 
