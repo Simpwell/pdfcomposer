@@ -43,8 +43,8 @@ export function PDFPagePreview({
 
       try {
         await renderTaskRef.current.promise
-      } catch (error) {
-        if (error.message !== 'Rendering cancelled') {
+      } catch (error: unknown) {
+        if (error instanceof Error && error.message !== 'Rendering cancelled') {
           console.error('Error rendering PDF page:', error)
         }
       }
