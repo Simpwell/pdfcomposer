@@ -5,6 +5,7 @@ participant PDFDropZone
 participant "Feature Component" as Feature
 participant usePDFUpload
 participant "PDF Library" as PDFLib
+participant "Tesseract.js" as OCR
 
 == ファイルアップロードフロー ==
 User -> PDFDropZone: ファイルをドロップ
@@ -31,12 +32,23 @@ User -> Feature: テキスト抽出開始
 activate Feature
 Feature -> PDFLib: テキストレイヤー確認
 alt テキストレイヤーあり
-    PDFLib --> Feature: テキスト抽出
+    PDFLib -> PDFLib: getTextContent()
+    PDFLib --> Feature: テキスト抽出結果
 else テキストレイヤーなし
-    Feature -> "Tesseract.js": OCR実行
-    "Tesseract.js" --> Feature: テキスト認識結果
+    Feature -> OCR: createWorker()
+    activate OCR
+    OCR --> Feature: worker作成完了
+    loop 各ページ
+        Feature -> PDFLib: ページをcanvasにレンダリング
+        PDFLib --> Feature: canvas
+        Feature -> OCR: recognize()
+        OCR --> Feature: OCR結果
+    end
+    Feature -> OCR: terminate()
+    deactivate OCR
 end
-Feature -> User: テキスト表示
+Feature -> Feature: テキスト整形
+Feature -> User: テキスト表示・ダウンロード
 deactivate Feature
 
 @enduml 
