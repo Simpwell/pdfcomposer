@@ -1,33 +1,22 @@
-import { Draggable } from 'react-beautiful-dnd';
+import React from 'react';
 import { PDFPagePreview } from './PDFPagePreview';
-import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { PDFDocumentProxy } from 'pdfjs-dist';
 
-interface DraggablePagePreviewProps {
+interface PDFPageThumbnailProps {
   pageNumber: number;
-  index: number;
   pdfDocument: PDFDocumentProxy;
 }
 
-export function DraggablePagePreview({
+export const PDFPageThumbnail: React.FC<PDFPageThumbnailProps> = ({
   pageNumber,
-  index,
-  pdfDocument
-}: DraggablePagePreviewProps) {
+  pdfDocument,
+}) => {
   return (
-    <Draggable draggableId={pageNumber.toString()} index={index}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className="w-[150px]"
-        >
-          <PDFPagePreview
-            pageNumber={pageNumber}
-            pdfDocument={pdfDocument}
-          />
-        </div>
-      )}
-    </Draggable>
+    <div className="relative cursor-move">
+      <PDFPagePreview pageNumber={pageNumber} pdfDocument={pdfDocument} />
+      <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-sm">
+        {pageNumber}
+      </div>
+    </div>
   );
-} 
+}; 

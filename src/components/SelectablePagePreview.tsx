@@ -1,6 +1,6 @@
 import React from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
-import { Check, Trash2, FilePlus } from 'lucide-react';
+import { Check, Trash2 } from 'lucide-react';
 import { PDFPagePreview } from './PDFPagePreview';
 
 interface SelectablePagePreviewProps {
@@ -8,7 +8,7 @@ interface SelectablePagePreviewProps {
   pdfDocument: pdfjsLib.PDFDocumentProxy;
   isSelected: boolean;
   onToggleSelect: () => void;
-  actionIcon: 'select' | 'delete' | 'extract';
+  actionIcon: 'delete' | 'select';
 }
 
 export const SelectablePagePreview: React.FC<SelectablePagePreviewProps> = ({
@@ -24,6 +24,15 @@ export const SelectablePagePreview: React.FC<SelectablePagePreviewProps> = ({
     const inactiveClasses = 'bg-white text-gray-500 opacity-0 group-hover:opacity-100';
 
     switch (actionIcon) {
+      case 'delete':
+        return (
+          <button
+            onClick={onToggleSelect}
+            className={`${baseClasses} ${isSelected ? activeClasses : inactiveClasses}`}
+          >
+            {isSelected ? <Check size={20} /> : <Trash2 size={20} />}
+          </button>
+        );
       case 'select':
         return (
           <button
@@ -31,24 +40,6 @@ export const SelectablePagePreview: React.FC<SelectablePagePreviewProps> = ({
             className={`${baseClasses} ${isSelected ? activeClasses : inactiveClasses}`}
           >
             <Check size={20} />
-          </button>
-        );
-      case 'delete':
-        return (
-          <button
-            onClick={onToggleSelect}
-            className={`${baseClasses} ${isSelected ? activeClasses : inactiveClasses}`}
-          >
-            <Trash2 size={20} />
-          </button>
-        );
-      case 'extract':
-        return (
-          <button
-            onClick={onToggleSelect}
-            className={`${baseClasses} ${isSelected ? activeClasses : inactiveClasses}`}
-          >
-            <FilePlus size={20} />
           </button>
         );
       default:
