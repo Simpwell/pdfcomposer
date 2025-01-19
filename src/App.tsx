@@ -10,7 +10,12 @@ export function App() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">PDF Composer</h1>
+      <h1 className="text-2xl font-bold mb-2">PDF Composer</h1>
+      <p className="text-sm text-gray-600 mb-6">
+        🔒 すべての処理はブラウザ内で完結 - PDFファイルがサーバーに送信されることはありません<br />
+        ⚡️ 高速処理 - ネットワーク遅延なしでPDFを操作<br />
+        💻 オフライン対応 - インターネット接続なしで利用可能
+      </p>
       <div className="flex flex-col gap-4">
         <div className="flex gap-2">
           <button
