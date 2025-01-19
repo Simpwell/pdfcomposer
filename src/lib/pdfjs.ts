@@ -6,5 +6,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString()
 
-// PDFドキュメントの読み込みに必要な関数のみをエクスポート
+// 必要な型と関数をエクスポート
+export type { PDFDocumentProxy } from 'pdfjs-dist'
 export const { getDocument } = pdfjsLib 
