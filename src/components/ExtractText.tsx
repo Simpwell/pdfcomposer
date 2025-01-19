@@ -99,6 +99,12 @@ export function ExtractText() {
     e.preventDefault()
   }
 
+  const handleClear = () => {
+    clearFiles()
+    setExtractedText('')
+    setError(null)
+  }
+
   return (
     <div className="space-y-4">
       <PDFDropZone
@@ -122,7 +128,7 @@ export function ExtractText() {
             {isProcessing ? 'テキスト抽出中...' : 'テキストを抽出'}
           </button>
           <button
-            onClick={() => clearFiles()}
+            onClick={handleClear}
             className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200"
           >
             クリア
