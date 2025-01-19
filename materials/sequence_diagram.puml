@@ -1,35 +1,42 @@
 @startuml
 
 actor User
-participant "PDFDropZone" as Drop
+participant PDFDropZone
 participant "Feature Component" as Feature
-participant "usePDFUpload" as Hook
-participant "PDF Library" as Lib
+participant usePDFUpload
+participant "PDF Library" as PDFLib
 
-' File Upload Flow
-User -> Drop: ドラッグ&ドロップ / ファイル選択
-activate Drop
-Drop -> Hook: handleFileUpload()
-activate Hook
-Hook -> Hook: ファイル検証
-Hook -> Lib: PDFドキュメント読み込み
-activate Lib
-Lib --> Hook: PDFドキュメント
-deactivate Lib
-Hook --> Drop: 完了
-deactivate Hook
-Drop --> User: プレビュー表示
-deactivate Drop
+== ファイルアップロードフロー ==
+User -> PDFDropZone: ファイルをドロップ
+activate PDFDropZone
+PDFDropZone -> usePDFUpload: handleFileUpload()
+activate usePDFUpload
+usePDFUpload -> PDFLib: ファイル読み込み
+PDFLib --> usePDFUpload: PDFDocument
+usePDFUpload --> PDFDropZone: 完了
+deactivate usePDFUpload
+PDFDropZone --> User: プレビュー表示
+deactivate PDFDropZone
 
-' PDF Operation Flow
+== PDF操作フロー ==
 User -> Feature: 操作実行
 activate Feature
-Feature -> Lib: PDFドキュメント操作
-activate Lib
-Lib --> Feature: 新しいPDFドキュメント
-deactivate Lib
-Feature -> Feature: Blobに変換
+Feature -> PDFLib: PDF操作
+PDFLib --> Feature: 新しいPDF
 Feature -> User: ダウンロード開始
+deactivate Feature
+
+== テキスト抽出フロー ==
+User -> Feature: テキスト抽出開始
+activate Feature
+Feature -> PDFLib: テキストレイヤー確認
+alt テキストレイヤーあり
+    PDFLib --> Feature: テキスト抽出
+else テキストレイヤーなし
+    Feature -> "Tesseract.js": OCR実行
+    "Tesseract.js" --> Feature: テキスト認識結果
+end
+Feature -> User: テキスト表示
 deactivate Feature
 
 @enduml 

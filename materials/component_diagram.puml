@@ -1,70 +1,77 @@
 @startuml
 
 package "PDFコンポーザー" {
-  [App] as app
-  
-  package "機能コンポーネント" {
-    [PDF結合] as merge
-    [ページ並び替え] as reorder
-    [ページ削除] as delete
-    [ページ抽出] as extract
-    [PDF分割] as split
-  }
-  
-  package "共通コンポーネント" {
-    [PDFドロップゾーン] as dropzone
-    [PDFページプレビュー] as preview
-    [PDFページサムネイル] as thumbnail
-    [PDFサムネイル] as pdfthumbnail
-  }
-  
-  package "Hooks" {
-    [usePDFUpload] as upload
-  }
-  
-  package "外部ライブラリ" {
-    [pdf-lib] as pdflib
-    [pdf.js] as pdfjs
-    [react-sortablejs] as sortable
-  }
+  [app]
 }
 
-' 依存関係
+package "機能コンポーネント" {
+  [merge] as "PDF結合"
+  [reorder] as "ページ並び替え"
+  [delete] as "ページ削除"
+  [extract] as "ページ抽出"
+  [split] as "PDF分割"
+  [text] as "テキスト抽出"
+}
+
+package "共通コンポーネント" {
+  [dropzone] as "PDFドロップゾーン"
+  [preview] as "PDFページプレビュー"
+  [draggable] as "ドラッグ可能プレビュー"
+  [selectable] as "選択可能プレビュー"
+}
+
+package "Hooks" {
+  [pdfUpload] as "usePDFUpload"
+}
+
+package "外部ライブラリ" {
+  [pdflib] as "pdf-lib"
+  [pdfjs] as "pdf.js"
+  [sortable] as "react-sortablejs"
+  [tesseract] as "tesseract.js"
+}
+
+' アプリケーションと機能コンポーネントの関係
 app --> merge
 app --> reorder
 app --> delete
 app --> extract
 app --> split
+app --> text
 
+' 機能コンポーネントと共通コンポーネントの関係
 merge --> dropzone
-merge --> pdfthumbnail
-merge ..> upload
-merge ..> pdflib
-
 reorder --> dropzone
-reorder --> thumbnail
-reorder ..> upload
-reorder ..> pdflib
-reorder ..> sortable
-
 delete --> dropzone
-delete --> thumbnail
-delete ..> upload
-delete ..> pdflib
-
 extract --> dropzone
-extract --> thumbnail
-extract ..> upload
-extract ..> pdflib
-
 split --> dropzone
-split --> preview
-split ..> upload
+text --> dropzone
+
+reorder --> draggable
+delete --> selectable
+extract --> selectable
+
+draggable --> preview
+selectable --> preview
+
+' 機能コンポーネントとHooksの関係
+merge --> pdfUpload
+reorder --> pdfUpload
+delete --> pdfUpload
+extract --> pdfUpload
+split --> pdfUpload
+text --> pdfUpload
+
+' 外部ライブラリの利用関係
+merge ..> pdflib
+reorder ..> pdflib
+delete ..> pdflib
+extract ..> pdflib
 split ..> pdflib
+text ..> pdfjs
+text ..> tesseract
 
-thumbnail --> preview
 preview ..> pdfjs
-
-upload ..> pdfjs
+reorder ..> sortable
 
 @enduml 

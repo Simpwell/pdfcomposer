@@ -1,103 +1,129 @@
 @startuml
 
-' Components
-class App {
-  +render(): JSX.Element
+package "Components" {
+  class App {
+    +render()
+  }
+
+  class PDFDropZone {
+    +onDrop(files: File[])
+    +onDragOver(event)
+    +render()
+  }
+
+  class MergePDF {
+    -handleMerge()
+    +render()
+  }
+
+  class ReorderPages {
+    -handleReorder()
+    +render()
+  }
+
+  class DeletePages {
+    -handleDelete()
+    +render()
+  }
+
+  class ExtractPages {
+    -handleExtract()
+    +render()
+  }
+
+  class SplitPDF {
+    -handleSplit()
+    +render()
+  }
+
+  class ExtractText {
+    -handleExtract()
+    -handleDownload()
+    +render()
+  }
+
+  class PDFPagePreview {
+    -renderPage()
+    +render()
+  }
+
+  class DraggablePagePreview {
+    +render()
+  }
+
+  class SelectablePagePreview {
+    -handleSelect()
+    +render()
+  }
 }
 
-class PDFDropZone {
-  +onDrop: (event: DragEvent) => void
-  +onDragOver: (event: DragEvent) => void
-  +onFileSelect: (files: FileList) => void
-  +icon?: ReactNode
-  +message?: string
-  +isAddMore?: boolean
-  +render(): JSX.Element
+package "Hooks" {
+  class usePDFUpload {
+    +files: File[]
+    +handleFileUpload()
+    +removeFile()
+    +clearFiles()
+  }
 }
 
-class PDFPagePreview {
-  +pageNumber: number
-  +pdfDocument: PDFDocumentProxy
-  +render(): JSX.Element
+package "External Libraries" {
+  class "pdf-lib" {
+    +PDFDocument
+    +PDFPage
+  }
+
+  class "pdf.js" {
+    +getDocument()
+    +PDFDocumentProxy
+  }
+
+  class "react-sortablejs" {
+    +ReactSortable
+  }
+
+  class "tesseract.js" {
+    +createWorker()
+    +recognize()
+  }
 }
 
-class PDFPageThumbnail {
-  +pageNumber: number
-  +pdfDocument: PDFDocumentProxy
-  +render(): JSX.Element
-}
-
-class PDFThumbnail {
-  +file: File
-  +onRemove: () => void
-  +render(): JSX.Element
-}
-
-' Features
-class MergePDF {
-  -handleMerge(): void
-  +render(): JSX.Element
-}
-
-class ReorderPages {
-  -handleReorder(): void
-  +render(): JSX.Element
-}
-
-class DeletePages {
-  -handleDelete(): void
-  +render(): JSX.Element
-}
-
-class ExtractPages {
-  -handleExtract(): void
-  +render(): JSX.Element
-}
-
-class SplitPDF {
-  -handleSplit(): void
-  +render(): JSX.Element
-}
-
-' Hooks
-class usePDFUpload {
-  -files: File[]
-  -error: string | null
-  -pdfDocument: PDFDocumentProxy | null
-  +handleFileUpload(files: FileList): void
-  +handleDrop(event: DragEvent): void
-  +handleDragOver(event: DragEvent): void
-  +removeFile(index: number): void
-  +clearFiles(): void
-}
-
-' Relationships
 App --> MergePDF
 App --> ReorderPages
 App --> DeletePages
 App --> ExtractPages
 App --> SplitPDF
+App --> ExtractText
 
 MergePDF --> PDFDropZone
-MergePDF --> PDFThumbnail
-MergePDF ..> usePDFUpload
-
 ReorderPages --> PDFDropZone
-ReorderPages --> PDFPageThumbnail
-ReorderPages ..> usePDFUpload
-
 DeletePages --> PDFDropZone
-DeletePages --> PDFPageThumbnail
-DeletePages ..> usePDFUpload
-
 ExtractPages --> PDFDropZone
-ExtractPages --> PDFPageThumbnail
-ExtractPages ..> usePDFUpload
-
 SplitPDF --> PDFDropZone
-SplitPDF --> PDFPagePreview
-SplitPDF ..> usePDFUpload
+ExtractText --> PDFDropZone
 
-PDFPageThumbnail --> PDFPagePreview
+ReorderPages --> DraggablePagePreview
+DeletePages --> SelectablePagePreview
+ExtractPages --> SelectablePagePreview
+
+DraggablePagePreview --> PDFPagePreview
+SelectablePagePreview --> PDFPagePreview
+
+MergePDF ..> "pdf-lib"
+ReorderPages ..> "pdf-lib"
+DeletePages ..> "pdf-lib"
+ExtractPages ..> "pdf-lib"
+SplitPDF ..> "pdf-lib"
+ExtractText ..> "pdf.js"
+ExtractText ..> "tesseract.js"
+
+PDFPagePreview ..> "pdf.js"
+ReorderPages ..> "react-sortablejs"
+
+MergePDF --> usePDFUpload
+ReorderPages --> usePDFUpload
+DeletePages --> usePDFUpload
+ExtractPages --> usePDFUpload
+SplitPDF --> usePDFUpload
+ExtractText --> usePDFUpload
 
 @enduml 
