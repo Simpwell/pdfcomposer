@@ -1,78 +1,77 @@
 import { useState } from 'react'
-import { Combine, Scissors, Trash2, FilePlus, MoveVertical } from 'lucide-react'
 import { MergePDF } from './components/MergePDF'
 import { ReorderPages } from './components/ReorderPages'
 import { DeletePages } from './components/DeletePages'
 import { ExtractPages } from './components/ExtractPages'
 import { SplitPDF } from './components/SplitPDF'
 
-// メインアプリケーション
-const App = () => {
-  const [currentTool, setCurrentTool] = useState('merge');
-
-  const menuItems = [
-    { id: 'merge', name: 'PDF結合', icon: Combine },
-    { id: 'split', name: 'PDF分割', icon: Scissors },
-    { id: 'delete', name: 'ページ削除', icon: Trash2 },
-    { id: 'extract', name: 'ページ抽出', icon: FilePlus },
-    { id: 'reorder', name: 'ページ順変更', icon: MoveVertical }
-  ];
-
-  const renderTool = () => {
-    switch (currentTool) {
-      case 'merge':
-        return <MergePDF />;
-      case 'split':
-        return <SplitPDF />;
-      case 'delete':
-        return <DeletePages />;
-      case 'extract':
-        return <ExtractPages />;
-      case 'reorder':
-        return <ReorderPages />;
-      default:
-        return <MergePDF />;
-    }
-  };
+export function App() {
+  const [activeTab, setActiveTab] = useState('merge')
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-5xl mx-auto px-4 py-4">
-          <h1 className="text-3xl font-bold text-gray-800">PDF Composer</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">PDF Composer</h1>
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-2">
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'merge'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('merge')}
+          >
+            PDF結合
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'reorder'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('reorder')}
+          >
+            ページ並び替え
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'delete'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('delete')}
+          >
+            ページ削除
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'extract'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('extract')}
+          >
+            ページ抽出
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'split'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('split')}
+          >
+            PDF分割
+          </button>
         </div>
-      </header>
-
-      <main className="max-w-5xl mx-auto p-4">
-        <div className="bg-white rounded-lg shadow">
-          <div className="border-b">
-            <nav className="flex">
-              {menuItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentTool(item.id)}
-                  className={`flex items-center px-4 py-3 text-sm font-medium ${
-                    currentTool === item.id
-                      ? 'border-b-2 border-blue-500 text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  <item.icon className="mr-2" size={20} />
-                  {item.name}
-                </button>
-              ))}
-            </nav>
-          </div>
-          
-          {renderTool()}
+        <div className="p-4 bg-white rounded-lg shadow">
+          {activeTab === 'merge' && <MergePDF />}
+          {activeTab === 'reorder' && <ReorderPages />}
+          {activeTab === 'delete' && <DeletePages />}
+          {activeTab === 'extract' && <ExtractPages />}
+          {activeTab === 'split' && <SplitPDF />}
         </div>
-      </main>
-
-      <footer className="max-w-5xl mx-auto p-4 text-center text-gray-500 text-sm">
-        <p>© 2025 PDF Composer - ブラウザ内で安全にPDF編集</p>
-      </footer>
+      </div>
     </div>
-  );
-};
-
-export default App;
+  )
+}
