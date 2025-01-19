@@ -1,10 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist'
 
-// PDFワーカーをローカルから読み込むように設定
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url
-).toString()
+// PDFワーカーをnode_modulesから直接読み込むように設定
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/node_modules/pdfjs-dist/build/pdf.worker.min.js'
 
 // 必要な型と関数をエクスポート
 export type { PDFDocumentProxy } from 'pdfjs-dist'
