@@ -4,6 +4,7 @@ import { ReorderPages } from './components/ReorderPages'
 import { DeletePages } from './components/DeletePages'
 import { ExtractPages } from './components/ExtractPages'
 import { SplitPDF } from './components/SplitPDF'
+import { ExtractText } from './components/ExtractText'
 
 export function App() {
   const [activeTab, setActiveTab] = useState('merge')
@@ -17,7 +18,7 @@ export function App() {
         💻 オフライン対応 - インターネット接続なしで利用可能
       </p>
       <div className="flex flex-col gap-4">
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <button
             className={`px-4 py-2 rounded-lg ${
               activeTab === 'merge'
@@ -68,6 +69,16 @@ export function App() {
           >
             PDF分割
           </button>
+          <button
+            className={`px-4 py-2 rounded-lg ${
+              activeTab === 'text'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 hover:bg-gray-200'
+            }`}
+            onClick={() => setActiveTab('text')}
+          >
+            テキスト抽出
+          </button>
         </div>
         <div className="p-4 bg-white rounded-lg shadow">
           {activeTab === 'merge' && <MergePDF />}
@@ -75,6 +86,7 @@ export function App() {
           {activeTab === 'delete' && <DeletePages />}
           {activeTab === 'extract' && <ExtractPages />}
           {activeTab === 'split' && <SplitPDF />}
+          {activeTab === 'text' && <ExtractText />}
         </div>
       </div>
     </div>
